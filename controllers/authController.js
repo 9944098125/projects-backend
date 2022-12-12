@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 
 const signup = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, phone, country, password } = req.body;
+    const { firstName, lastName, email, phone, country, password, image } =
+      req.body;
     if (!(firstName || lastName || email || phone || country || password)) {
       res.status(400).json({ error: "All inputs are required..." });
     }
@@ -22,6 +23,7 @@ const signup = async (req, res, next) => {
       email,
       phone,
       country,
+      image,
       password: hashedPassword,
     });
     const savedUser = await newUser.save();
@@ -54,7 +56,16 @@ const sign_in = async (req, res) => {
         process.env.JWT_SECRET_KEY
       );
       // user
-      res.status(200).json({ user, token });
+      res.status(200).json({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        country: user.country,
+        image: user.image,
+        token: token,
+      });
     } else {
       res.status(400).send("Invalid Credentials");
     }

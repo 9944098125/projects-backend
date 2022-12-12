@@ -25,8 +25,7 @@ async function connect() {
   }
 }
 
-// console.log(process.env.MONGO_URI);
-// console.log(process.env.JWT_SECRET_KEY);
+const port = process.env.PORT || 5000;
 
 app.use("/api/auth/", authRoute);
 app.use("/api/projects/", projectRoute);
@@ -39,7 +38,6 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
-const port = process.env.PORT || 3000;
 // console.log(process.env.PORT);
 
 app.listen(port, () => {

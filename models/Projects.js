@@ -3,13 +3,10 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const projectsSchema = new mongoose.Schema(
   {
-    userId: {
-      type: ObjectId,
-      ref: "Users",
-    },
     projectTitle: {
       type: String,
       required: true,
+      unique: true,
     },
     projectDescription: {
       type: String,
@@ -18,10 +15,14 @@ const projectsSchema = new mongoose.Schema(
     projectLink: {
       type: String,
     },
+    userId: {
+      type: ObjectId,
+      ref: "Users",
+    },
   },
   { timestamps: true }
 );
 
-const Projects = mongoose.model("Project", projectsSchema);
+const Projects = mongoose.model("Projects", projectsSchema);
 
 module.exports = Projects;
