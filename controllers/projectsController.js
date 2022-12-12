@@ -48,7 +48,10 @@ const updateProjects = async (req, res, next) => {
       { new: true }
     );
     const savedProject = await updatedProject.save();
-    res.status(200).json(savedProject);
+    res.status(200).json({
+      message: "Updated the project successfully",
+      project: savedProject,
+    });
   } catch (err) {
     console.log("update project error: ", err);
   }
