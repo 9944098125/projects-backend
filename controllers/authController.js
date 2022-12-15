@@ -70,8 +70,65 @@ const sign_in = async (req, res) => {
       res.status(400).send("Invalid Credentials");
     }
   } catch (err) {
+    next(err);
     console.log("error", err);
   }
 };
 
-module.exports = { signup, sign_in };
+const resetPassword = async (req, res, next) => {
+  try {
+    const { userId, newPassword } = req.body;
+    const existingUser = await Users.findOne({ _id: userId });
+    if (existingUser) {
+      const salt = bcrypt.genSaltSync(10);
+      const securedPassword = await bcrypt.hashSync(newPassword, salt);
+
+      const updatedPassword = await Users.findByIdAndUpdate(
+        { _id: userId },
+        { $set: { password: securedPassword } }
+      );
+      res.status(200).json({ message: "Updated the password successfully" });
+    }
+  } catch (err) {
+    next(err);
+    console.log("update password error in backend", err);
+  }
+};
+
+const getUser = async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const foundUser = await Users.findOne({ userId: userId });
+    res
+      .status(200)
+      .json({ message: "User Found successfully", user: foundUser });
+  } catch (err) {
+    next(err);
+    console.log(err);
+  }
+};
+
+const updateUser = async (req, res, next) => {
+  try {
+    const updatedUser = await Users.findByIdAndUpdate(
+      req.params.userId,
+      { $set: req.body },
+      { new: true }
+    );
+    const savedUser = await updatedUser.save();
+    res
+      .status(201)
+      .json({ message: "User Updated successfully", user: savedUser });
+  } catch (err) {
+    next(err);
+    console.log("update user error in backend", err);
+  }
+};
+
+module.exports = {
+  signup,
+  sign_in,
+  resetPassword,
+  getUser,
+  updateUser,
+};
